@@ -1,0 +1,28 @@
+name: Acción compuesta - tirada de dados
+description: 'Acción de tirada de dados'
+inputs:
+  numero-dados:
+    required: true
+    type: string
+    default: dos
+    description: "El número de dados que se van a tirar. Valores aceptados: [uno, dos]"
+outputs:
+  dado1:
+    value: ${{ steps.dado1.outputs.dado1 }}
+  dado2:
+    value: ${{ steps.dado2.outputs.dado2 }}
+runs:
+  using: "composite"
+  steps:
+    - name: ¿Cuántos dados?
+      shell: bash
+      run: echo "Hay ${{inputs.numero-dados}} dados"
+    - name: Generar Dado 1
+      shell: bash
+      id: dado1
+      run: echo "dado1=$((1 + RANDOM % 6))" >> "$GITHUB_OUTPUT"
+    - name: Generar Dado 2
+      shell: bash
+      if: ${{ inputs.numero-dados == 'dos' }}
+      id: dado2
+      run: echo "dado2=$((1 + RANDOM %6))" >> "$GITHUB_OUTPUT"
